@@ -1,1 +1,94 @@
-version: '3.9'
+version: "3.9"
+
+services:
+  master:
+    # image: redis:7.0.2
+    image: redis
+    container_name: redis-master
+    # restart: always
+    command: /bin/bash -c "redis-server /etc/redis/redis.conf"
+    volumes:
+      - /opt/docker-compose/redis-sentinel/master/redis.conf:/etc/redis/redis.conf
+      - /opt/docker-compose/redis-sentinel/master/data:/data
+      - /opt/docker-compose/redis-sentinel/master/log:/log
+    ports:
+      - 6390:6379
+    environment:
+      TZ: "Asia/Shanghai"
+    # networks:
+    #   redisNet:
+    #     ipv4_address: 192.168.140.141
+
+  follower1:
+    image: redis
+    container_name: redis-follower1
+    command: /bin/bash -c "redis-server /etc/redis/redis.conf"
+    volumes:
+      - /opt/docker-compose/redis-sentinel/follower1/redis.conf:/etc/redis/redis.conf
+      - /opt/docker-compose/redis-sentinel/follower1/data:/data
+      - /opt/docker-compose/redis-sentinel/follower1/log:/log
+    ports:
+      - 6391:6379
+
+  follower2:
+    image: redis
+    container_name: redis-follower2
+    command: /bin/bash -c "redis-server /etc/redis/redis.conf"
+    volumes:
+      - /opt/docker-compose/redis-sentinel/follower2/redis.conf:/etc/redis/redis.conf
+      - /opt/docker-compose/redis-sentinel/follower2/data:/data
+      - /opt/docker-compose/redis-sentinel/follower2/log:/log
+    ports:
+      - 6392:6379
+    # networks:
+    #   redisNet:
+    #     ipv4_address: 192.168.140.142
+
+  sentinel1:
+    image: redis
+    depends_on:
+      - master
+      - follower1
+      - follower2
+    container_name: redis-sentinel1
+    command: /bin/bash -c "redis-sentinel /etc/redis/redis-sentinel.conf"
+    volumes:
+      - /opt/docker-compose/redis-sentinel/sentinel1/sentine.config:/etc/redis/redis-sentinel.config
+      - /opt/docker-compose/redis-sentinel/sentinel1/data:/data
+      - /opt/docker-compose/redis-sentinel/sentinel1/log:/log
+    ports:
+      - 26390:26379
+
+  sentinel2:
+    image: redis
+    depends_on:
+      - master
+      - follower1
+      - follower2
+    container_name: redis-sentinel2
+    command: /bin/bash -c "redis-sentinel /etc/redis/redis-sentinel.conf"
+    volumes:
+      - /opt/docker-compose/redis-sentinel/sentinel2/sentine.config:/etc/redis/redis-sentinel.config
+      - /opt/docker-compose/redis-sentinel/sentinel2/data:/data
+      - /opt/docker-compose/redis-sentinel/sentinel2/log:/log
+    ports:
+      - 26391:26379
+
+  sentinel3:
+    image: redis
+    depends_on:
+      - master
+      - follower1
+      - follower2
+    container_name: redis-sentinel3
+    command: /bin/bash -c "redis-sentinel /etc/redis/redis-sentinel.conf"
+    volumes:
+      - /opt/docker-compose/redis-sentinel/sentinel3/sentine.config:/etc/redis/redis-sentinel.config
+      - /opt/docker-compose/redis-sentinel/sentinel3/data:/data
+      - /opt/docker-compose/redis-sentinel/sentinel3/log:/log
+    ports:
+      - 26392:26379
+
+# networks:
+#   redisNet:
+#     external: true
