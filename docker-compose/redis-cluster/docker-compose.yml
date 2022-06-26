@@ -8,76 +8,84 @@ services:
     # restart: always
     command: /bin/bash -c "redis-server /etc/redis/redis.conf"
     volumes:
-      - /opt/docker-compose/redis-sentinel/redis01/conf:/etc/redis
-      - /opt/docker-compose/redis-sentinel/redis01/data:/data
-      - /opt/docker-compose/redis-sentinel/redis01/log:/log
+      - /opt/docker-compose/redis-cluster/redis01/conf:/etc/redis
+      - /opt/docker-compose/redis-cluster/redis01/data:/data
+      - /opt/docker-compose/redis-cluster/redis01/log:/log
     ports:
       - 7001:7001
-      - 3001:3001
     environment:
       TZ: "Asia/Shanghai"
-    networks:
-      redis_cluster_net:
-        aliases:
-          - redis-master
+    # network_mode: "host"
+    # networks:
+    #   - redis_cluster_net
 
   redis_02:
     image: redis
-    depends_on:
-      - master
     container_name: redis_02
     command: /bin/bash -c "redis-server /etc/redis/redis.conf"
     volumes:
-      - /opt/docker-compose/redis-sentinel/redis02/conf:/etc/redis
-      - /opt/docker-compose/redis-sentinel/redis02/data:/data
-      - /opt/docker-compose/redis-sentinel/redis02/log:/log
+      - /opt/docker-compose/redis-cluster/redis02/conf:/etc/redis
+      - /opt/docker-compose/redis-cluster/redis02/data:/data
+      - /opt/docker-compose/redis-cluster/redis02/log:/log
     ports:
       - 7002:7002
-      - 3002:3002
     environment:
       TZ: "Asia/Shanghai"
-    networks:
-      - redis_cluster_net
+    # network_mode: "host"
+    # networks:
+    #   - redis_cluster_net
 
   redis_03:
     image: redis
-    depends_on:
-      - master
     container_name: redis_03
     command: /bin/bash -c "redis-server /etc/redis/redis.conf"
     volumes:
-      - /opt/docker-compose/redis-sentinel/redis03/conf:/etc/redis
-      - /opt/docker-compose/redis-sentinel/redis03/data:/data
-      - /opt/docker-compose/redis-sentinel/redis03/log:/log
+      - /opt/docker-compose/redis-cluster/redis03/conf:/etc/redis
+      - /opt/docker-compose/redis-cluster/redis03/data:/data
+      - /opt/docker-compose/redis-cluster/redis03/log:/log
     ports:
       - 7003:7003
-      - 3003:3003
     environment:
       TZ: "Asia/Shanghai"
-    networks:
-      - redis_cluster_net
+    # network_mode: "host"
+    # networks:
+    #   - redis_cluster_net
 
   redis_04:
     image: redis
-    depends_on:
-      - master
     container_name: redis_04
-    command: 
-      - /bin/bash -c "redis-server /etc/redis/redis.conf"
-      # - redis-cli --cluster create redis_cluster_net:7001 redis_cluster_net:7002 redis_cluster_net:7003 redis_cluster_net:7004 --cluster-replicas 1
+    command: /bin/bash -c "redis-server /etc/redis/redis.conf"
     volumes:
-      - /opt/docker-compose/redis-sentinel/redis04/conf:/etc/redis
-      - /opt/docker-compose/redis-sentinel/redis04/data:/data
-      - /opt/docker-compose/redis-sentinel/redis04/log:/log
+      - /opt/docker-compose/redis-cluster/redis04/conf:/etc/redis
+      - /opt/docker-compose/redis-cluster/redis04/data:/data
+      - /opt/docker-compose/redis-cluster/redis04/log:/log
     ports:
       - 7004:7004
-      - 3004:3004
     environment:
       TZ: "Asia/Shanghai"
-    networks:
-      - redis_cluster_net
+    # network_mode: "host"
+    # networks:
+    #   - redis_cluster_net
 
-networks:
-  redis_cluster_net:
+  redis_cluster:
+    image: redis
+    depends_on:
+      - redis_01
+      - redis_02
+      - redis_03
+      - redis_04
+    container_name: redis_cluster
+    command: /bin/bash -c "redis-cli --cluster create 127.0.0.1:7001 127.0.0.1:7002 127.0.0.1:7003 127.0.0.1:7004 --cluster-replicas 0"
+    environment:
+      TZ: "Asia/Shanghai"
+    # networks:
+    #   - redis_cluster_net
+    network_mode: "host"
 
+# networks:
+#   redis_cluster_net:
 # network_mode: "host"
+
+
+#  redis 官网提示应该使用 network_mode: "host"
+# https://redis.io/docs/manual/scaling/
