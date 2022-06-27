@@ -11,11 +11,11 @@ services:
       - /opt/docker-compose/redis-cluster/redis01/conf:/etc/redis
       - /opt/docker-compose/redis-cluster/redis01/data:/data
       - /opt/docker-compose/redis-cluster/redis01/log:/log
-    ports:
-      - 7001:7001
+    # ports:
+    #   - 7001:7001
     environment:
       TZ: "Asia/Shanghai"
-    # network_mode: "host"
+    network_mode: "host"
     # networks:
     #   - redis_cluster_net
 
@@ -27,11 +27,11 @@ services:
       - /opt/docker-compose/redis-cluster/redis02/conf:/etc/redis
       - /opt/docker-compose/redis-cluster/redis02/data:/data
       - /opt/docker-compose/redis-cluster/redis02/log:/log
-    ports:
-      - 7002:7002
+    # ports:
+    #   - 7002:7002
     environment:
       TZ: "Asia/Shanghai"
-    # network_mode: "host"
+    network_mode: "host"
     # networks:
     #   - redis_cluster_net
 
@@ -43,11 +43,11 @@ services:
       - /opt/docker-compose/redis-cluster/redis03/conf:/etc/redis
       - /opt/docker-compose/redis-cluster/redis03/data:/data
       - /opt/docker-compose/redis-cluster/redis03/log:/log
-    ports:
-      - 7003:7003
+    # ports:
+    #   - 7003:7003
     environment:
       TZ: "Asia/Shanghai"
-    # network_mode: "host"
+    network_mode: "host"
     # networks:
     #   - redis_cluster_net
 
@@ -59,11 +59,11 @@ services:
       - /opt/docker-compose/redis-cluster/redis04/conf:/etc/redis
       - /opt/docker-compose/redis-cluster/redis04/data:/data
       - /opt/docker-compose/redis-cluster/redis04/log:/log
-    ports:
-      - 7004:7004
+    # ports:
+    #   - 7004:7004
     environment:
       TZ: "Asia/Shanghai"
-    # network_mode: "host"
+    network_mode: "host"
     # networks:
     #   - redis_cluster_net
 
@@ -75,7 +75,8 @@ services:
       - redis_03
       - redis_04
     container_name: redis_cluster
-    command: /bin/bash -c "redis-cli --cluster create 127.0.0.1:7001 127.0.0.1:7002 127.0.0.1:7003 127.0.0.1:7004 --cluster-replicas 0"
+    # 多看官方文档 https://github.com/redis/redis/blob/unstable/utils/create-cluster/create-cluster 一定要加 --cluster-yes
+    command: /bin/bash -c "redis-cli --cluster create 127.0.0.1:7001 127.0.0.1:7002 127.0.0.1:7003 127.0.0.1:7004 --cluster-replicas 0 --cluster-yes"
     environment:
       TZ: "Asia/Shanghai"
     # networks:
