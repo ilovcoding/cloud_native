@@ -1,0 +1,13 @@
+version: "3.9"
+
+services:
+  nginx_stable:
+    image: nginx:stable-alpine
+    container_name: nginx_stable
+    volumes:
+      - /opt/docker-compose/nginx/templates:/etc/nginx/templates
+      - /opt/docker-compose/nginx/conf:/etc/nginx/conf.d
+    environment:
+      # - NGINX_HOST=foobar.com
+      - NGINX_PORT=80
+    network_mode: "host"
