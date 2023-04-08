@@ -1,0 +1,18 @@
+version: "3.9"
+services:
+  janus-gateway:
+    image: 'canyan/janus-gateway'
+    container_name: janus-gateway
+    command: ["/usr/local/bin/janus", "-F", "/usr/local/etc/janus"]
+    ports:
+      - "8088:8088"
+      - "8089:8089"
+      - "8889:8889"
+      - "8000:8000"
+      - "7088:7088"
+      - "7089:7089"
+    # volumes:
+      # - "/opt/docker-compose/janus-gateway/janus.jcfg:/usr/local/etc/janus/janus.jcfg"
+      # - "/opt/docker-compose/janus-gateway/janus.eventhandler.sampleevh.jcfg:/usr/local/etc/janus/janus.eventhandler.sampleevh.jcfg"
+    restart: always
+    network_mode: 'host'
